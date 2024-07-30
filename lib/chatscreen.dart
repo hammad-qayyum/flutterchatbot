@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _scrollToBottom();
 
       final response = await http.post(
-        Uri.parse('http://98.80.78.119:3202/chat'),
+        Uri.parse('http://98.80.78.119:3203/chat'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'query': query, 'use_case': useCase}),
       );
