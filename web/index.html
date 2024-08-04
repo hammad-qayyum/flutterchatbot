@@ -29,8 +29,27 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>chatbotapp</title>
+  <title>Chk Chk Boom</title>
   <link rel="manifest" href="manifest.json">
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAV88m7Kqauc66KVEsfRjg0j-8j0KOsqRA",
+      authDomain: "flutterchatbot-65ccd.firebaseapp.com",
+      projectId: "flutterchatbot-65ccd",
+      storageBucket: "flutterchatbot-65ccd.appspot.com",
+      messagingSenderId: "1042260397362",
+      appId: "1:1042260397362:web:48e71a7cd9e13b6d5adb2b"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

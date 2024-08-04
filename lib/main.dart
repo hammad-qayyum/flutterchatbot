@@ -2,7 +2,7 @@ import 'package:chatbotapp/chatscreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Chatbot',
+      title: 'Chk Chk Boom',
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.blueGrey,
         appBarTheme: const AppBarTheme(

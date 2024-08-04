@@ -6,6 +6,7 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChatScreenState createState() => _ChatScreenState();
 }
 
@@ -32,7 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _scrollToBottom();
 
       final response = await http.post(
-        Uri.parse('http://98.80.78.119:3203/chat'),
+        Uri.parse('http://167.172.90.222:3201/chat'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'query': query, 'use_case': useCase}),
       );
@@ -76,104 +77,222 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Chatbot'),
-      ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.75,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(8),
-                  itemCount: _messages.length + (_isLoading ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == _messages.length && _isLoading) {
-                      return const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Bot is typing...',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontStyle: FontStyle.italic,
-                            ),
+        backgroundColor: Colors.black.withOpacity(0.4),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            bool isMobile = constraints.maxWidth < 600;
+            return isMobile
+                ? SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Chk Chk Boom',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Credit: khanhphanphotography',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
                           ),
                         ),
-                      );
-                    }
-                    final message = _messages[index];
-                    return Align(
-                      alignment: message['type'] == 'user'
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          color: message['type'] == 'user'
-                              ? Colors.blueGrey
-                              : Colors.grey[800],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          message['message']!,
-                          style: const TextStyle(color: Colors.white),
+                      ],
+                    ),
+                  )
+                : const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 1,
+                      ),
+                      Text(
+                        'Chk Chk Boom',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Credit: khanhphanphotography',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
                         ),
                       ),
-                    );
-                  },
+                    ],
+                  );
+          },
+        ),
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isMobile = constraints.maxWidth < 600;
+          return Stack(
+            children: [
+              // Background Image
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/background.jpeg', // Your image asset
+                  fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        decoration: const InputDecoration(
-                          hintText: 'Type a message',
-                        ),
-                        onSubmitted: (value) {
-                          _sendMessage();
-                        },
+              // Foreground content
+              Center(
+                child: SizedBox(
+                  width: isMobile
+                      ? MediaQuery.of(context).size.width
+                      : MediaQuery.of(context).size.width * 0.75,
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 75,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    DropdownButton<String>(
-                      value: _selectedOption,
-                      items: <String>[
-                        'demand forecast',
-                        'sales analysis',
-                        'marketing campaign analysis'
-                      ].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedOption = newValue!;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: _sendMessage,
-                      child: const Text('Send'),
-                    ),
-                  ],
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(8),
+                          itemCount: _messages.length + (_isLoading ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == _messages.length && _isLoading) {
+                              return const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Bot is typing...',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                            final message = _messages[index];
+                            return Align(
+                              alignment: message['type'] == 'user'
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                margin: const EdgeInsets.symmetric(vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: message['type'] == 'user'
+                                      ? Colors.blueGrey
+                                      : Colors.grey[800],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  message['message']!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: isMobile
+                            ? Column(
+                                children: <Widget>[
+                                  TextField(
+                                    controller: _controller,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Type a message',
+                                    ),
+                                    onSubmitted: (value) {
+                                      _sendMessage();
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: DropdownButton<String>(
+                                          value: _selectedOption,
+                                          items: <String>[
+                                            'demand forecast',
+                                            'sales analysis',
+                                            'marketing analysis'
+                                          ].map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedOption = newValue!;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      ElevatedButton(
+                                        onPressed: _sendMessage,
+                                        child: const Text('Send'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _controller,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Type a message',
+                                      ),
+                                      onSubmitted: (value) {
+                                        _sendMessage();
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  DropdownButton<String>(
+                                    value: _selectedOption,
+                                    items: <String>[
+                                      'demand forecast',
+                                      'sales analysis',
+                                      'marketing analysis'
+                                    ].map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _selectedOption = newValue!;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  ElevatedButton(
+                                    onPressed: _sendMessage,
+                                    child: const Text('Send'),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
