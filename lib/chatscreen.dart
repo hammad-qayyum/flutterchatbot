@@ -6,7 +6,6 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChatScreenState createState() => _ChatScreenState();
 }
 
@@ -53,6 +52,54 @@ class _ChatScreenState extends State<ChatScreen> {
         _scrollToBottom();
       });
     }
+  }
+
+  Future<void> _clearThread() async {
+    final response = await http.post(
+      Uri.parse('http://167.172.90.222:3201/clear-thread'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'use_case': _selectedOption}),
+    );
+
+    String alertMessage = 'Failed to clear the thread';
+    if (response.statusCode == 200) {
+      setState(() {
+        _messages.clear();
+        alertMessage = 'Thread cleared successfully!';
+      });
+    } else {
+      alertMessage = 'Error: ${response.statusCode}';
+    }
+
+    _showAlert(alertMessage);
+  }
+
+  void _showAlert(String message) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible:
+          false, // Prevents closing the alert by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alert'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Closes the alert dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _scrollToBottom() {
@@ -202,40 +249,83 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: isMobile
-                            ? Column(
-                                children: <Widget>[
-                                  TextField(
-                                    controller: _controller,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Type a message',
-                                    ),
-                                    onSubmitted: (value) {
-                                      _sendMessage();
-                                    },
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
+                        child: Column(
+                          children: <Widget>[
+                            isMobile
+                                ? Column(
+                                    children: <Widget>[
+                                      TextField(
+                                        controller: _controller,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Type a message',
+                                        ),
+                                        onSubmitted: (value) {
+                                          _sendMessage();
+                                        },
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: DropdownButton<String>(
+                                              value: _selectedOption,
+                                              items: <String>[
+                                                'demand forecast',
+                                                'sales analysis',
+                                                'marketing analysis'
+                                              ].map((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  _selectedOption = newValue!;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          ElevatedButton(
+                                            onPressed: _sendMessage,
+                                            child: const Text('Send'),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                : Row(
                                     children: <Widget>[
                                       Expanded(
-                                        child: DropdownButton<String>(
-                                          value: _selectedOption,
-                                          items: <String>[
-                                            'demand forecast',
-                                            'sales analysis',
-                                            'marketing analysis'
-                                          ].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _selectedOption = newValue!;
-                                            });
+                                        child: TextField(
+                                          controller: _controller,
+                                          decoration: const InputDecoration(
+                                            hintText: 'Type a message',
+                                          ),
+                                          onSubmitted: (value) {
+                                            _sendMessage();
                                           },
                                         ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      DropdownButton<String>(
+                                        value: _selectedOption,
+                                        items: <String>[
+                                          'demand forecast',
+                                          'sales analysis',
+                                          'marketing analysis'
+                                        ].map((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            _selectedOption = newValue!;
+                                          });
+                                        },
                                       ),
                                       const SizedBox(width: 8),
                                       ElevatedButton(
@@ -244,47 +334,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ),
                                     ],
                                   ),
-                                ],
-                              )
-                            : Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _controller,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Type a message',
-                                      ),
-                                      onSubmitted: (value) {
-                                        _sendMessage();
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  DropdownButton<String>(
-                                    value: _selectedOption,
-                                    items: <String>[
-                                      'demand forecast',
-                                      'sales analysis',
-                                      'marketing analysis'
-                                    ].map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedOption = newValue!;
-                                      });
-                                    },
-                                  ),
-                                  const SizedBox(width: 8),
-                                  ElevatedButton(
-                                    onPressed: _sendMessage,
-                                    child: const Text('Send'),
-                                  ),
-                                ],
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              onPressed: _clearThread,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red, // Background color
                               ),
+                              child: const Text('Clear Thread', style: TextStyle(color: Colors.white),),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
