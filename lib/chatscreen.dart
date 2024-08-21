@@ -13,7 +13,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
   final ScrollController _scrollController = ScrollController();
-  String _selectedOption = 'demand forecast';
+  String _selectedOption = 'Sales';
   bool _isLoading = false;
 
   Future<void> _sendMessage() async {
@@ -270,9 +270,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                             child: DropdownButton<String>(
                                               value: _selectedOption,
                                               items: <String>[
-                                                'demand forecast',
-                                                'sales analysis',
-                                                'marketing analysis'
+                                                'Sales',
+                                                'Marketing',
+                                                'General'
                                               ].map((String value) {
                                                 return DropdownMenuItem<String>(
                                                   value: value,
@@ -312,9 +312,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       DropdownButton<String>(
                                         value: _selectedOption,
                                         items: <String>[
-                                          'demand forecast',
-                                          'sales analysis',
-                                          'marketing analysis'
+                                          'Sales',
+                                          'Marketing',
+                                          'General'
                                         ].map((String value) {
                                           return DropdownMenuItem<String>(
                                             value: value,
